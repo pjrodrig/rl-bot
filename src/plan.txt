@@ -1,0 +1,10 @@
+#goals
+get to any point on the ground
+get to any point in the air
+get to any point as quickly as possible
+
+
+#stats
+determine closest car to ball in distance
+determine closest car to ball in possible movement
+determine possible directions the ball can be hit
