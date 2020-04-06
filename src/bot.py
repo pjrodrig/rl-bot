@@ -12,32 +12,71 @@ class MyBot(BaseAgent):
     def initialize_agent(self):
         # This runs once before the bot starts up
         self.controller_state = SimpleControllerState()
+        self.throttle = {
+            'til': 0,
+           'value': 0
+        }
+
+        #debug
+        self.setThrottle = True
 
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
-        my_car = packet.game_cars[self.index]
-        car_location = Vec3(my_car.physics.location)
-        car_to_target = self.target - car_location
+        secondsElapsed = packet.game_info.seconds_elapsed
+        myCar = packet.game_cars[self.index]
 
-        # print(car_location.dist(self.target))
-        if car_location.dist(self.target) < 30:
-            pick_random_target(self, self.get_field_info().boost_pads)
+        # if self.setThrottle:
+        #     self.setThrottle = False
+        #     self.throttle['til'] = secondsElapsed + 3
+        #     self.throttle.value = 1
+        #     print(myCar.physics.location)
+        #     print(secondsElapsed)
         
-        # Find the direction of our car using the Orientation class
-        car_orientation = Orientation(my_car.physics.rotation)
-        car_direction = car_orientation.forward
+        
 
-        steer_correction_radians = find_correction(car_direction, car_to_target)
-        if steer_correction_radians > 1:
-            turn = -1
-        elif steer_correction_radians < -1:
-            turn = 1
-        else:
-            turn = -1 * steer_correction_radians
 
-        self.controller_state.throttle = 1.0
-        self.controller_state.steer = turn
-        path = predictBallPath(packet.game_ball)
-        draw_debug(self.renderer, my_car, packet.game_ball, "", self.target, path)
+        # if self.throttle['til'] > secondsElapsed:
+        #     self.controller_state.throttle = self.throttle['value']
+        # else:
+        #     if self.controller_state.throttle > 0:
+        #         print(myCar.physics.location)
+        #         print(secondsElapsed)
+        #     self.controller_state.throttle = 0
+
+        # if self.steer.til > secondsElapsed:
+        #     self.controller_state.steer = self.steer.value
+        # else:
+        #     self.controller_state.steer = 0
+
+
+        loc = packet.game_cars[0].physics.location
+        curve = [loc]
+        for i in range(0, 200):
+            curve += []
+
+
+        # car_location = Vec3(my_car.physics.location)
+        # car_to_target = self.target - car_location
+
+        # # print(car_location.dist(self.target))
+        # if car_location.dist(self.target) < 30:
+        #     pick_random_target(self, self.get_field_info().boost_pads)
+        
+        # # Find the direction of our car using the Orientation class
+        # car_orientation = Orientation(my_car.physics.rotation)
+        # car_direction = car_orientation.forward
+
+        # steer_correction_radians = find_correction(car_direction, car_to_target)
+        # if steer_correction_radians > 1:
+        #     turn = -1
+        # elif steer_correction_radians < -1:
+        #     turn = 1
+        # else:
+        #     turn = -1 * steer_correction_radians
+
+        # self.controller_state.throttle = 1.0
+        # self.controller_state.steer = turn
+        # path = predictBallPath(packet.game_ball)
+        # draw_debug(self.renderer, my_car, packet.game_ball, "", self.target, path)
 
         return self.controller_state
 
